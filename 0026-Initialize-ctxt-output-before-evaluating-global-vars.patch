@@ -1,0 +1,101 @@
+From 99eb3e4358c93984de7597f6fdc8bb64973046c5 Mon Sep 17 00:00:00 2001
+From: Nick Wellnhofer <wellnhofer@aevum.de>
+Date: Mon, 11 Feb 2019 23:29:53 +0100
+Subject: [PATCH 26/33] Initialize ctxt->output before evaluating global vars
+
+Otherwise, an xsl:element in an EXSLT function could lead to a null
+pointer dereference. Also initialize some other variables earlier.
+
+Fixes #10.
+---
+ libxslt/transform.c       | 13 +++++++------
+ tests/docs/bug-215.xml    |  1 +
+ tests/general/bug-215.err |  8 ++++++++
+ tests/general/bug-215.out |  0
+ tests/general/bug-215.xsl |  6 ++++++
+ 5 files changed, 22 insertions(+), 6 deletions(-)
+ create mode 100644 tests/docs/bug-215.xml
+ create mode 100644 tests/general/bug-215.err
+ create mode 100644 tests/general/bug-215.out
+ create mode 100644 tests/general/bug-215.xsl
+
+diff --git a/libxslt/transform.c b/libxslt/transform.c
+index ed5afac..1379391 100644
+--- a/libxslt/transform.c
++++ b/libxslt/transform.c
+@@ -6011,6 +6011,13 @@ xsltApplyStylesheetInternal(xsltStylesheetPtr style, xmlDocPtr doc,
+         res->encoding = xmlStrdup(encoding);
+     variables = style->variables;
+ 
++    ctxt->node = (xmlNodePtr) doc;
++    ctxt->output = res;
++
++    ctxt->xpathCtxt->contextSize = 1;
++    ctxt->xpathCtxt->proximityPosition = 1;
++    ctxt->xpathCtxt->node = NULL; /* TODO: Set the context node here? */
++
+     /*
+      * Start the evaluation, evaluate the params, the stylesheets globals
+      * and start by processing the top node.
+@@ -6020,7 +6027,6 @@ xsltApplyStylesheetInternal(xsltStylesheetPtr style, xmlDocPtr doc,
+     /*
+     * Evaluate global params and user-provided params.
+     */
+-    ctxt->node = (xmlNodePtr) doc;
+     if (ctxt->globalVars == NULL)
+ 	ctxt->globalVars = xmlHashCreate(20);
+     if (params != NULL) {
+@@ -6035,14 +6041,9 @@ xsltApplyStylesheetInternal(xsltStylesheetPtr style, xmlDocPtr doc,
+     /* Clean up any unused RVTs. */
+     xsltReleaseLocalRVTs(ctxt, NULL);
+ 
+-    ctxt->node = (xmlNodePtr) doc;
+-    ctxt->output = res;
+     ctxt->insert = (xmlNodePtr) res;
+     ctxt->varsBase = ctxt->varsNr - 1;
+ 
+-    ctxt->xpathCtxt->contextSize = 1;
+-    ctxt->xpathCtxt->proximityPosition = 1;
+-    ctxt->xpathCtxt->node = NULL; /* TODO: Set the context node here? */
+     /*
+     * Start processing the source tree -----------------------------------
+     */
+diff --git a/tests/docs/bug-215.xml b/tests/docs/bug-215.xml
+new file mode 100644
+index 0000000..ead3414
+--- /dev/null
++++ b/tests/docs/bug-215.xml
+@@ -0,0 +1 @@
++<empty/>
+diff --git a/tests/general/bug-215.err b/tests/general/bug-215.err
+new file mode 100644
+index 0000000..a4fbd23
+--- /dev/null
++++ b/tests/general/bug-215.err
+@@ -0,0 +1,8 @@
++  ELEMENT fake
++element fake: error : Node has no parent
++    ELEMENT elem
++{DEF}f: cannot write to result tree while executing a function
++xmlXPathCompiledEval: No result on the stack.
++runtime error: file ./bug-215.xsl line 5 element variable
++Evaluating global variable  var/param being computed failed
++no result for ./../docs/bug-215.xml
+diff --git a/tests/general/bug-215.out b/tests/general/bug-215.out
+new file mode 100644
+index 0000000..e69de29
+diff --git a/tests/general/bug-215.xsl b/tests/general/bug-215.xsl
+new file mode 100644
+index 0000000..0dabaaa
+--- /dev/null
++++ b/tests/general/bug-215.xsl
+@@ -0,0 +1,6 @@
++<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:func="http://exslt.org/functions" xmlns:abc="DEF" version="1.0" extension-element-prefixes="func">
++  <func:function name="abc:f">
++    <xsl:element name="elem"/>
++  </func:function>
++  <xsl:variable name="v" select="abc:f()"/>
++</xsl:stylesheet>
+-- 
+1.8.3.1
+

@@ -1,0 +1,39 @@
+From dfa1bdceaef73a404d1c6efe58c3618493b36afb Mon Sep 17 00:00:00 2001
+From: Nick Wellnhofer <wellnhofer@aevum.de>
+Date: Sat, 22 Sep 2018 15:47:10 +0200
+Subject: [PATCH 14/33] Variables need 'extern' in static lib on Cygwin
+
+---
+ libexslt/exsltexports.h | 2 +-
+ libxslt/xsltexports.h   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/libexslt/exsltexports.h b/libexslt/exsltexports.h
+index 21c49a4..eee8222 100644
+--- a/libexslt/exsltexports.h
++++ b/libexslt/exsltexports.h
+@@ -124,7 +124,7 @@
+     #if !defined(LIBEXSLT_STATIC)
+       #define EXSLTPUBVAR __declspec(dllimport) extern
+     #else
+-      #define EXSLTPUBVAR
++      #define EXSLTPUBVAR extern
+     #endif
+   #endif
+   #define EXSLTCALL __cdecl
+diff --git a/libxslt/xsltexports.h b/libxslt/xsltexports.h
+index 37b43bf..99b6ac3 100644
+--- a/libxslt/xsltexports.h
++++ b/libxslt/xsltexports.h
+@@ -126,7 +126,7 @@
+     #if !defined(LIBXSLT_STATIC)
+       #define XSLTPUBVAR __declspec(dllimport) extern
+     #else
+-      #define XSLTPUBVAR
++      #define XSLTPUBVAR extern
+     #endif
+   #endif
+   #define XSLTCALL __cdecl
+-- 
+1.8.3.1
+

@@ -1,0 +1,24 @@
+From 00b327b6ca85a64ce9bf521a04a6d1ca84f21f82 Mon Sep 17 00:00:00 2001
+From: Nick Wellnhofer <wellnhofer@aevum.de>
+Date: Tue, 12 Feb 2019 02:45:50 +0100
+Subject: [PATCH 25/33] Fix memory leak in EXSLT functions error path
+
+---
+ libexslt/functions.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/libexslt/functions.c b/libexslt/functions.c
+index 6005671..075e236 100644
+--- a/libexslt/functions.c
++++ b/libexslt/functions.c
+@@ -476,6 +476,7 @@ exsltFuncFunctionFunction (xmlXPathParserContextPtr ctxt, int nargs) {
+ 			 "executing a function\n",
+ 			 ctxt->context->functionURI, ctxt->context->function);
+ 	xmlFreeNode(fake);
++        xmlXPathFreeObject(ret);
+ 	goto error;
+     }
+     xmlFreeNode(fake);
+-- 
+1.8.3.1
+

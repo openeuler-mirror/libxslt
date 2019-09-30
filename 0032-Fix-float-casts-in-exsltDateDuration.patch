@@ -1,0 +1,65 @@
+From 6df1b708bd02f05c6d85ddddc1ca7f5450ebc5ea Mon Sep 17 00:00:00 2001
+From: Nick Wellnhofer <wellnhofer@aevum.de>
+Date: Fri, 8 Mar 2019 12:59:09 +0100
+Subject: [PATCH 32/33] Fix float casts in exsltDateDuration
+
+Add range check before converting double to long to avoid undefined
+behavior.
+
+Found with libFuzzer and UBSan.
+---
+ libexslt/date.c                 | 7 +++++--
+ tests/exslt/date/duration.2.out | 2 ++
+ tests/exslt/date/duration.2.xml | 1 +
+ 3 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/libexslt/date.c b/libexslt/date.c
+index 6a3eb58..32c9db7 100644
+--- a/libexslt/date.c
++++ b/libexslt/date.c
+@@ -3106,14 +3106,17 @@ exsltDateDuration (const xmlChar *number)
+     else
+         secs = xmlXPathCastStringToNumber(number);
+ 
+-    if ((xmlXPathIsNaN(secs)) || (xmlXPathIsInf(secs)))
++    if (xmlXPathIsNaN(secs))
++        return NULL;
++
++    days = floor(secs / SECS_PER_DAY);
++    if ((days <= LONG_MIN) || (days >= LONG_MAX))
+         return NULL;
+ 
+     dur = exsltDateCreateDuration();
+     if (dur == NULL)
+         return NULL;
+ 
+-    days = floor(secs / SECS_PER_DAY);
+     dur->day = (long)days;
+     dur->sec = secs - days * SECS_PER_DAY;
+ 
+diff --git a/tests/exslt/date/duration.2.out b/tests/exslt/date/duration.2.out
+index 688b176..87505d5 100644
+--- a/tests/exslt/date/duration.2.out
++++ b/tests/exslt/date/duration.2.out
+@@ -12,4 +12,6 @@ result   :
+ duration : P10Y10Y
+ result   : 
+ duration : P10.0Y
++result   : 
++duration : 9999999999999999999999999
+ result   : 
+\ No newline at end of file
+diff --git a/tests/exslt/date/duration.2.xml b/tests/exslt/date/duration.2.xml
+index 5bc250e..d81f21d 100644
+--- a/tests/exslt/date/duration.2.xml
++++ b/tests/exslt/date/duration.2.xml
+@@ -8,5 +8,6 @@
+  <date seconds="P10Y10H"/>
+  <date seconds="P10Y10Y"/>
+  <date seconds="P10.0Y"/>
++ <date seconds="9999999999999999999999999"/>
+ </page>
+ 
+-- 
+1.8.3.1
+

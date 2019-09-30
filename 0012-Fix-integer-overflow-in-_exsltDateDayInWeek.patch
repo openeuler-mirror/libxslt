@@ -1,0 +1,32 @@
+From c75b811de0afeea6acf19c99a755b8e1c0585aa9 Mon Sep 17 00:00:00 2001
+From: Nick Wellnhofer <wellnhofer@aevum.de>
+Date: Thu, 25 Apr 2019 11:16:58 +0200
+Subject: [PATCH 12/26] Fix integer overflow in _exsltDateDayInWeek
+
+Found by OSS-Fuzz.
+---
+ libexslt/date.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/libexslt/date.c b/libexslt/date.c
+index 32c9db7..d075adc 100644
+--- a/libexslt/date.c
++++ b/libexslt/date.c
+@@ -1474,11 +1474,12 @@ _exsltDateDayInWeek(long yday, long yr)
+     long ret;
+ 
+     if (yr <= 0) {
+-        ret = ((yr-2 + ((yr/4)-(yr/100)+(yr/400)) + yday) % 7);
++        /* Compute modulus twice to avoid integer overflow */
++        ret = ((yr%7-2 + ((yr/4)-(yr/100)+(yr/400)) + yday) % 7);
+         if (ret < 0)
+             ret += 7;
+     } else
+-        ret = (((yr-1) + (((yr-1)/4)-((yr-1)/100)+((yr-1)/400)) + yday) % 7);
++        ret = (((yr%7-1) + (((yr-1)/4)-((yr-1)/100)+((yr-1)/400)) + yday) % 7);
+ 
+     return ret;
+ }
+-- 
+1.8.3.1
+

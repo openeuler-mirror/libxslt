@@ -1,0 +1,65 @@
+From 06d193fabb096370a969ca9f017f60bca7057262 Mon Sep 17 00:00:00 2001
+From: Nick Wellnhofer <wellnhofer@aevum.de>
+Date: Thu, 11 Apr 2019 14:06:51 +0200
+Subject: [PATCH 04/26] Fix check of xsltTestCompMatch return value
+
+xsltTestCompMatch returns -1 in case of errors which wasn't checked in
+most places.
+
+Found when investigating a libFuzzer timeout.
+---
+ libxslt/pattern.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/libxslt/pattern.c b/libxslt/pattern.c
+index 7d66019..5577877 100644
+--- a/libxslt/pattern.c
++++ b/libxslt/pattern.c
+@@ -2401,7 +2401,7 @@ xsltGetTemplate(xsltTransformContextPtr ctxt, xmlNodePtr node,
+ 	    list = NULL;
+ 	while (list != NULL) {
+ 	    if (xsltTestCompMatch(ctxt, list, node,
+-			          ctxt->mode, ctxt->modeURI)) {
++			          ctxt->mode, ctxt->modeURI) == 1) {
+ 		ret = list->template;
+ 		priority = list->priority;
+ 		break;
+@@ -2470,7 +2470,7 @@ xsltGetTemplate(xsltTransformContextPtr ctxt, xmlNodePtr node,
+ 	while ((list != NULL) &&
+ 	       ((ret == NULL)  || (list->priority > priority))) {
+ 	    if (xsltTestCompMatch(ctxt, list, node,
+-			          ctxt->mode, ctxt->modeURI)) {
++			          ctxt->mode, ctxt->modeURI) == 1) {
+ 		ret = list->template;
+ 		priority = list->priority;
+ 		break;
+@@ -2487,7 +2487,7 @@ xsltGetTemplate(xsltTransformContextPtr ctxt, xmlNodePtr node,
+ 	    while ((list != NULL) &&
+ 		   ((ret == NULL)  || (list->priority > priority))) {
+ 		if (xsltTestCompMatch(ctxt, list, node,
+-				      ctxt->mode, ctxt->modeURI)) {
++				      ctxt->mode, ctxt->modeURI) == 1) {
+ 		    ret = list->template;
+ 		    priority = list->priority;
+ 		    break;
+@@ -2500,7 +2500,7 @@ xsltGetTemplate(xsltTransformContextPtr ctxt, xmlNodePtr node,
+ 	    while ((list != NULL) &&
+ 		   ((ret == NULL)  || (list->priority > priority))) {
+ 		if (xsltTestCompMatch(ctxt, list, node,
+-				      ctxt->mode, ctxt->modeURI)) {
++				      ctxt->mode, ctxt->modeURI) == 1) {
+ 		    ret = list->template;
+ 		    priority = list->priority;
+ 		    break;
+@@ -2515,7 +2515,7 @@ keyed_match:
+ 	    while ((list != NULL) &&
+ 		   ((ret == NULL)  || (list->priority > priority))) {
+ 		if (xsltTestCompMatch(ctxt, list, node,
+-				      ctxt->mode, ctxt->modeURI)) {
++				      ctxt->mode, ctxt->modeURI) == 1) {
+ 		    ret = list->template;
+ 		    priority = list->priority;
+ 		    break;
+-- 
+1.8.3.1
+
