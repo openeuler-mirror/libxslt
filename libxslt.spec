@@ -1,6 +1,6 @@
 Name:     libxslt
 Version:  1.1.32
-Release:  4
+Release:  5
 Summary:  XSLT Transformation Library
 License:  MIT
 URL:      http://xmlsoft.org/libxslt/
@@ -29,6 +29,8 @@ Patch6014:0015-Fix-numbering-in-non-Latin-scripts.patch
 Patch6015:0019-Avoid-quadratic-behavior-in-xsltSaveResultTo.patch
 Patch6016:0023-Fix-insertion-of-xsl-fallback-content.patch
 Patch6017:0025-Fix-unsigned-integer-overflow-in-date.c.patch
+Patch6018:CVE-2019-18197.patch
+Patch6019:CVE-2019-13118.patch
 
 BuildRequires: gcc make libtool autoconf automake libgcrypt-devel pkgconfig(libxml-2.0) >= 2.6.27
 
@@ -120,5 +122,8 @@ make check
 %doc python/tests/*.xsl
 
 %changelog
+* Sat Dec 21 2019 openEuler Buildteam <buildteam@openeuler.org> - 1.1.32-5
+- Fix CVE-2019-18197 and CVE-2019-13118
+
 * Tue Sep 03 2019 openEuler Buildteam <buildteam@openeuler.org> - 1.1.32-4 
 - Package init
