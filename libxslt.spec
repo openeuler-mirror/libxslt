@@ -111,8 +111,6 @@ make check
 %exclude %{_docdir}/../licenses/Copyright
 
 %files -n python2-libxslt
-n Dec 31 2019 openEuler Buildteam <buildteam@openeuler.org> - 1.1.32-6
-- fix bug in community files
 %{_libdir}/python2.7/site-packages/libxslt.py*
 %{_libdir}/python2.7/site-packages/libxsltmod.so
 %{_docdir}/libxslt-python-1.1.32/*
