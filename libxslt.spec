@@ -1,10 +1,10 @@
 Name:     libxslt
 Version:  1.1.32
-Release:  5
+Release:  6
 Summary:  XSLT Transformation Library
 License:  MIT
 URL:      http://xmlsoft.org/libxslt/
-Source0:  ftp://xmlsoft.org/XSLT/libxslt-%{version}.tar.gz
+Source0:  https://github.com/GNOME/%{name}/archive/v%{version}.tar.gz
 # Fedora specific patches
 Patch0:   multilib.patch
 Patch1:   libxslt-1.1.26-utf8-docs.patch
@@ -104,8 +104,6 @@ make check
 %{_libdir}/pkgconfig/libexslt.pc
 %{_bindir}/xslt-config
 
-
-
 %files help
 %doc %{_docdir}/%{name}-%{version}
 %doc %{_mandir}/man3/*
@@ -122,6 +120,9 @@ make check
 %doc python/tests/*.xsl
 
 %changelog
+* Mon Dec 31 2019 openEuler Buildteam <buildteam@openeuler.org> - 1.1.32-6
+- fix bug in community files
+
 * Sat Dec 21 2019 openEuler Buildteam <buildteam@openeuler.org> - 1.1.32-5
 - Fix CVE-2019-18197 and CVE-2019-13118
 
