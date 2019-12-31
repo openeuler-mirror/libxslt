@@ -4,7 +4,7 @@ Release:  6
 Summary:  XSLT Transformation Library
 License:  MIT
 URL:      http://xmlsoft.org/libxslt/
-Source0:  https://github.com/GNOME/%{name}/archive/v%{version}.tar.gz
+Source0:  https://github.com/GNOME/%{name}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 # Fedora specific patches
 Patch0:   multilib.patch
 Patch1:   libxslt-1.1.26-utf8-docs.patch
