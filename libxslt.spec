@@ -1,13 +1,10 @@
 Name:     libxslt
 Version:  1.1.32
-Release:  6
+Release:  7
 Summary:  XSLT Transformation Library
 License:  MIT
 URL:      http://xmlsoft.org/libxslt/
 Source0:  https://github.com/GNOME/%{name}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
-# Fedora specific patches
-Patch0:   multilib.patch
-Patch1:   libxslt-1.1.26-utf8-docs.patch
 # PATCH-FIX-UPSTREAM bug-fix https://github.com/GNOME/libxslt/
 Patch6000:0009-Fix-handling-of-RVTs-returned-from-nested-EXSLT-func.patch
 Patch6001:0012-Fix-EXSLT-functions-returning-RVTs-from-outer-scopes.patch
@@ -120,6 +117,9 @@ make check
 %doc python/tests/*.xsl
 
 %changelog
+* Sat Jan 11 2020 zhangguangzhi<zhanguangzhi3@huawei.com> - 1.1.32-7
+- del patch to be consistent with open source
+
 * Mon Dec 31 2019 openEuler Buildteam <buildteam@openeuler.org> - 1.1.32-6
 - fix bug in community files
 
