@@ -1,0 +1,25 @@
+From f235404b13f17d5343b854fe5d459a0c98bbd2d2 Mon Sep 17 00:00:00 2001
+From: Nick Wellnhofer <wellnhofer@aevum.de>
+Date: Fri, 10 Jan 2020 13:11:45 +0100
+Subject: [PATCH 12/24] Fix implicit-int-conversion warning in exslt/crypto.c
+
+---
+ libexslt/crypto.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libexslt/crypto.c b/libexslt/crypto.c
+index 621fd90..c6bf34f 100644
+--- a/libexslt/crypto.c
++++ b/libexslt/crypto.c
+@@ -101,7 +101,7 @@ exsltCryptoHex2Bin (const unsigned char *hex, int hexlen,
+ 	else if (tmp >= 'a' && tmp <= 'f')
+ 	    lo = 10 + (tmp - 'a');
+ 
+-	result = hi << 4;
++	result = (unsigned char) (hi << 4);
+ 	result += lo;
+ 	bin[j++] = result;
+     }
+-- 
+1.8.3.1
+
