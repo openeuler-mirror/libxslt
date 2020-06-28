@@ -1,12 +1,16 @@
 Name:     libxslt
 Version:  1.1.34
-Release:  1
+Release:  2
 Summary:  XSLT Transformation Library
 License:  MIT
 URL:      http://xmlsoft.org/libxslt/
 Source0:  https://github.com/GNOME/%{name}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 # PATCH-FIX-UPSTREAM bug-fix https://github.com/GNOME/libxslt/
-Patch1:CVE-2015-9019.patch
+Patch0000: CVE-2015-9019.patch
+Patch0001: Fix-variable-syntax-in-Python-configuration.patch
+Patch0002: Fix-clang-Wconditional-uninitialized-warning-in-libx.patch
+Patch0003: Fix-clang-Wimplicit-int-conversion-warning.patch
+Patch0004: Fix-implicit-int-conversion-warning-in-exslt-crypto..patch
 
 BuildRequires: gcc make libtool autoconf automake libgcrypt-devel pkgconfig(libxml-2.0) >= 2.6.27
 
@@ -96,6 +100,9 @@ make check
 %doc python/tests/*.xsl
 
 %changelog
+* Tue Jun 23 2020 openEuler xuping<xuping21@huawei.com> - 1.1.34-2
+- quality enhancement synchronization github patch
+
 * Mon May 11 2020 openEuler Buildteam<buildteam@openeuler.org> - 1.1.34-1
 - update to 1.1.34
 
