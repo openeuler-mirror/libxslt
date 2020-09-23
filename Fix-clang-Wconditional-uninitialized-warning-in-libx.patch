@@ -1,0 +1,28 @@
+From 291d190b3d37bfe58efe7328e37a5334c553126b Mon Sep 17 00:00:00 2001
+From: David Kilzer <ddkilzer@apple.com>
+Date: Tue, 7 Jan 2020 15:15:53 -0800
+Subject: [PATCH 10/24] Fix clang -Wconditional-uninitialized warning in
+ libxslt/numbers.c
+
+* libxslt/numbers.c:
+(xsltFormatNumberConversion): Initialize `len` to fix warning.
+---
+ libxslt/numbers.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libxslt/numbers.c b/libxslt/numbers.c
+index 92023f8..7969dc9 100644
+--- a/libxslt/numbers.c
++++ b/libxslt/numbers.c
+@@ -960,7 +960,7 @@ xsltFormatNumberConversion(xsltDecimalFormatPtr self,
+     xmlChar *nprefix, *nsuffix = NULL;
+     int	    prefix_length, suffix_length = 0, nprefix_length, nsuffix_length;
+     double  scale;
+-    int	    j, len;
++    int	    j, len = 0;
+     int     self_grouping_len;
+     xsltFormatNumberInfo format_info;
+     /*
+-- 
+1.8.3.1
+
