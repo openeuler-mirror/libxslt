@@ -1,0 +1,49 @@
+From 4ccc06b56b8b6d39c29932c92cd1ed82f6698d6f Mon Sep 17 00:00:00 2001
+From: Nick Wellnhofer <wellnhofer@aevum.de>
+Date: Sun, 20 Sep 2020 15:14:47 +0200
+Subject: [PATCH 33/37] Fix quadratic runtime with text and <xsl:message>
+
+Backup and restore "last text" data in xsltEvalTemplateString.
+Otherwise, optimization of string concatenation would be disabled
+whenever an xsl:message was processed.
+
+Found by OSS-Fuzz.
+---
+ libxslt/templates.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/libxslt/templates.c b/libxslt/templates.c
+index 48b73a5..4108ed2 100644
+--- a/libxslt/templates.c
++++ b/libxslt/templates.c
+@@ -210,6 +210,8 @@ xsltEvalTemplateString(xsltTransformContextPtr ctxt,
+ {
+     xmlNodePtr oldInsert, insert = NULL;
+     xmlChar *ret;
++    const xmlChar *oldLastText;
++    int oldLastTextSize, oldLastTextUse;
+ 
+     if ((ctxt == NULL) || (contextNode == NULL) || (inst == NULL) ||
+         (inst->type != XML_ELEMENT_NODE))
+@@ -233,12 +235,18 @@ xsltEvalTemplateString(xsltTransformContextPtr ctxt,
+     }
+     oldInsert = ctxt->insert;
+     ctxt->insert = insert;
++    oldLastText = ctxt->lasttext;
++    oldLastTextSize = ctxt->lasttsize;
++    oldLastTextUse = ctxt->lasttuse;
+     /*
+     * OPTIMIZE TODO: if inst->children consists only of text-nodes.
+     */
+     xsltApplyOneTemplate(ctxt, contextNode, inst->children, NULL, NULL);
+ 
+     ctxt->insert = oldInsert;
++    ctxt->lasttext = oldLastText;
++    ctxt->lasttsize = oldLastTextSize;
++    ctxt->lasttuse = oldLastTextUse;
+ 
+     ret = xmlNodeGetContent(insert);
+     if (insert != NULL)
+-- 
+1.8.3.1
+
