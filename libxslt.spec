@@ -1,13 +1,17 @@
 Name:     libxslt
 Version:  1.1.34
-Release:  2
+Release:  3
 Summary:  XSLT Transformation Library
 License:  MIT
 URL:      http://xmlsoft.org/libxslt/
 Source0:  https://github.com/GNOME/%{name}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 # PATCH-FIX-UPSTREAM bug-fix https://github.com/GNOME/libxslt/
 Patch0: CVE-2015-9019.patch
-Patch1: Fix-quadratic-runtime-with-text-and-xsl-message.patch
+Patch1: Fix-variable-syntax-in-Python-configuration.patch
+Patch2: Fix-clang-Wconditional-uninitialized-warning-in-libx.patch
+Patch3: Fix-clang-Wimplicit-int-conversion-warning.patch
+Patch4: Fix-implicit-int-conversion-warning-in-exslt-crypto..patch
+Patch5: Fix-quadratic-runtime-with-text-and-xsl-message.patch
 
 BuildRequires: gcc make libtool autoconf automake libgcrypt-devel pkgconfig(libxml-2.0) >= 2.6.27
 
@@ -97,6 +101,9 @@ make check
 %doc python/tests/*.xsl
 
 %changelog
+* Wed Sep 23 2020 yangzhuangzhuang<yangzhuangzhuang1@huawei.com> - 1.1.34-3
+- sync patches from LTS branch
+
 * Wed Sep 23 2020 yangzhuangzhuang<yangzhuangzhuang1@huawei.com> - 1.1.34-2
 - Fix the large loop found in xsltApplyStylesheetUser through fuzzing testcase xslt.
 
