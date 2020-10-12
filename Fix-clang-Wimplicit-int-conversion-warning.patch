@@ -1,0 +1,28 @@
+From aac4bccdd893713dd058305e385d7f13f94e6add Mon Sep 17 00:00:00 2001
+From: David Kilzer <ddkilzer@apple.com>
+Date: Tue, 7 Jan 2020 15:23:17 -0800
+Subject: [PATCH 11/24] Fix clang -Wimplicit-int-conversion warning
+
+* libxslt/numbers.c:
+(xsltNumberFormatDecimal): Cast `val` to `(xmlChar)` to fix the
+warning.
+---
+ libxslt/numbers.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libxslt/numbers.c b/libxslt/numbers.c
+index 7969dc9..4cb2125 100644
+--- a/libxslt/numbers.c
++++ b/libxslt/numbers.c
+@@ -177,7 +177,7 @@ xsltNumberFormatDecimal(xmlBufferPtr buffer,
+ 	        i = -1;
+ 		break;
+ 	    }
+-	    *(--pointer) = val;
++	    *(--pointer) = (xmlChar)val;
+ 	}
+ 	else {
+ 	/*
+-- 
+1.8.3.1
+
