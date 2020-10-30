@@ -1,6 +1,6 @@
 Name:     libxslt
 Version:  1.1.34
-Release:  3
+Release:  4
 Summary:  XSLT Transformation Library
 License:  MIT
 URL:      http://xmlsoft.org/libxslt/
@@ -30,24 +30,12 @@ transformation mechanism.
 
 %package_help
 
-%package -n python2-libxslt
-%{?python_provide:%python_provide python2-libxslt}
-Summary:        Development files for %{name}
-BuildRequires:  python2-devel python2-libxml2
-Requires:       %{name} = %{version}-%{release}
-Requires:       python2-libxml2
-Provides:       %{name}-python = %{version}-%{release}
-
-%description  -n python2-libxslt
-The python2-libxslt package contains the python2 bindings for %{name}
-
 %prep
 %autosetup -n %{name}-%{version} -p1
 
 %build
 chmod 644 python/tests/*
 autoreconf -vfi
-export PYTHON=/usr/bin/python2
 %configure --disable-static --disable-silent-rules --with-python 
 %make_build
 
@@ -91,16 +79,10 @@ make check
 %exclude %{_docdir}/%{name}/{ChangeLog,NEWS,README,FEATURES,AUTHORS}
 %exclude %{_docdir}/../licenses/Copyright
 
-%files -n python2-libxslt
-%{_libdir}/python2.7/site-packages/libxslt.py*
-%{_libdir}/python2.7/site-packages/libxsltmod.so
-%{_docdir}/libxslt-python-1.1.34/*
-%doc python/libxsltclass.txt
-%doc python/tests/*.py
-%doc python/tests/*.xml
-%doc python/tests/*.xsl
-
 %changelog
+* Thu Oct 29 2020 wangchen<wangchen137@huawei.com> - 1.1.34-4
+- remove python2
+
 * Wed Sep 23 2020 yangzhuangzhuang<yangzhuangzhuang1@huawei.com> - 1.1.34-3
 - sync patches from LTS branch
 
