@@ -1,6 +1,6 @@
 Name:     libxslt
 Version:  1.1.34
-Release:  3
+Release:  4
 Summary:  XSLT Transformation Library
 License:  MIT
 URL:      http://xmlsoft.org/libxslt/
@@ -12,6 +12,7 @@ Patch2: Fix-clang-Wconditional-uninitialized-warning-in-libx.patch
 Patch3: Fix-clang-Wimplicit-int-conversion-warning.patch
 Patch4: Fix-implicit-int-conversion-warning-in-exslt-crypto..patch
 Patch5: Fix-quadratic-runtime-with-text-and-xsl-message.patch
+Patch6: Fix-double-free-with-stylesheets-containing-entity-n.patch
 
 BuildRequires: gcc make libtool autoconf automake libgcrypt-devel pkgconfig(libxml-2.0) >= 2.6.27
 
@@ -101,6 +102,9 @@ make check
 %doc python/tests/*.xsl
 
 %changelog
+* Sat Oct 23 2021 panxiaohe<panxiaohe@huawei.com> - 1.1.34-4
+- Fix double-free with stylesheets containing entity nodes
+
 * Wed Sep 23 2020 yangzhuangzhuang<yangzhuangzhuang1@huawei.com> - 1.1.34-3
 - Fix the large loop found in xsltApplyStylesheetUser through fuzzing testcase xslt.
 
@@ -113,7 +117,7 @@ make check
 * Sat Jan 11 2020 zhangguangzhi<zhanguangzhi3@huawei.com> - 1.1.32-7
 - del patch to be consistent with open source
 
-* Mon Dec 31 2019 openEuler Buildteam <buildteam@openeuler.org> - 1.1.32-6
+* Tue Dec 31 2019 openEuler Buildteam <buildteam@openeuler.org> - 1.1.32-6
 - fix bug in community files
 
 * Sat Dec 21 2019 openEuler Buildteam <buildteam@openeuler.org> - 1.1.32-5
