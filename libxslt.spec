@@ -1,6 +1,6 @@
 Name:     libxslt
 Version:  1.1.34
-Release:  5
+Release:  6
 Summary:  XSLT Transformation Library
 License:  MIT
 URL:      http://xmlsoft.org/libxslt/
@@ -46,7 +46,7 @@ autoreconf -vfi
 pushd $RPM_BUILD_ROOT/%{_includedir}/%{name}; touch -m --reference=xslt.h ../../bin/xslt-config;popd
 
 %check
-make check
+%make_build tests
 
 %post
 /sbin/ldconfig
@@ -81,6 +81,9 @@ make check
 %exclude %{_docdir}/../licenses/Copyright
 
 %changelog
+* Jan Wed 05 2022 fuanan <fuanan3@huawei.com> - 1.1.34-6
+- Fix test command
+
 * Sat Oct 23 2021 panxiaohe<panxiaohe@huawei.com> - 1.1.34-5
 - Fix double-free with stylesheets containing entity nodes
 
