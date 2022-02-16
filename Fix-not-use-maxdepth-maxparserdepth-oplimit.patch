@@ -1,0 +1,49 @@
+From 9ae2f94df1721e002941b40665efb762aefcea1a Mon Sep 17 00:00:00 2001
+From: Nick Wellnhofer <wellnhofer@aevum.de>
+Date: Mon, 17 Aug 2020 03:42:11 +0200
+Subject: [PATCH] Stop using maxParserDepth XPath limit
+
+This will be removed again from libxml2.
+--- libxslt-1.1.34/tests/fuzz/fuzz.c
++++ libxslt-1.1.34-updated/tests/fuzz/fuzz.c
+@@ -168,8 +168,6 @@
+     xpctxt = tctxt->xpathCtxt;
+ 
+     /* Resource limits to avoid timeouts and call stack overflows */
+-    xpctxt->maxParserDepth = 15;
+-    xpctxt->maxDepth = 100;
+     xpctxt->opLimit = 500000;
+ 
+     /* Test namespaces used in xpath.xml */
+@@ -300,13 +298,6 @@
+     return 0;
+ }
+ 
+-static void
+-xsltSetXPathResourceLimits(xmlXPathContextPtr ctxt) {
+-    ctxt->maxParserDepth = 15;
+-    ctxt->maxDepth = 100;
+-    ctxt->opLimit = 100000;
+-}
+-
+ xmlChar *
+ xsltFuzzXslt(const char *data, size_t size) {
+     xmlDocPtr xsltDoc;
+@@ -336,7 +327,7 @@
+         xmlFreeDoc(xsltDoc);
+         return NULL;
+     }
+-    xsltSetXPathResourceLimits(sheet->xpathCtxt);
++    sheet->xpathCtxt->opLimit = 100000;
+     sheet->xpathCtxt->opCount = 0;
+     if (xsltParseStylesheetUser(sheet, xsltDoc) != 0) {
+         xsltFreeStylesheet(sheet);
+@@ -348,7 +339,7 @@
+     xsltSetCtxtSecurityPrefs(sec, ctxt);
+     ctxt->maxTemplateDepth = 100;
+     ctxt->opLimit = 20000;
+-    xsltSetXPathResourceLimits(ctxt->xpathCtxt);
++    ctxt->xpathCtxt->opLimit = 100000;
+     ctxt->xpathCtxt->opCount = sheet->xpathCtxt->opCount;
+ 
+     result = xsltApplyStylesheetUser(sheet, doc, NULL, NULL, NULL, ctxt);
