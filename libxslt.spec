@@ -1,6 +1,6 @@
 Name:     libxslt
 Version:  1.1.34
-Release:  5
+Release:  6
 Summary:  XSLT Transformation Library
 License:  MIT
 URL:      http://xmlsoft.org/libxslt/
@@ -13,6 +13,7 @@ Patch3: Fix-clang-Wimplicit-int-conversion-warning.patch
 Patch4: Fix-implicit-int-conversion-warning-in-exslt-crypto..patch
 Patch5: Fix-quadratic-runtime-with-text-and-xsl-message.patch
 Patch6: Fix-double-free-with-stylesheets-containing-entity-n.patch
+Patch7: Fix-not-use-maxdepth-maxparserdepth-oplimit.patch
 
 BuildRequires: gcc make libtool autoconf automake libgcrypt-devel pkgconfig(libxml-2.0) >= 2.6.27
 
@@ -81,6 +82,9 @@ make check
 %exclude %{_docdir}/../licenses/Copyright
 
 %changelog
+* Thu Feb 17 2022 YukariChiba<i@0x7f.cc> - 1.1.34-6
+- Do not use maxParserDepth, maxDepth and opLimit.
+
 * Sat Oct 23 2021 panxiaohe<panxiaohe@huawei.com> - 1.1.34-5
 - Fix double-free with stylesheets containing entity nodes
 
